@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Film</title>
+</head>
+<body>
+<h1>Add Film</h1>
+
+<form method="post" action="/films">
+  <label for="name">Title:</label>
+  <input type="text" id= "name" name="title" required><br><br>
+  <label for="duration">duration:</label>
+  <input type="number" id="duration" name="director" required><br><br>
+  <label for="releaseDate">Release Deate:</label>
+  <input type="date" id = "releaseDate" name="releaseDate" required><br><br>
+  <label for="genre">Genre:</label>
+  <select name="genre" id="genre" required>
+    <option value="1">Action</option>
+    <option value="2">Comedy</option>
+    <option value="3">Drama</option>
+    <option value="4">Horror</option>
+    <option value="5">Romance</option>
+    <option value="6">Sci-Fi</option>
+  </select><br><br>
+  <button type="submit">Add Film</button>
+</form>
+</body>
+</html>

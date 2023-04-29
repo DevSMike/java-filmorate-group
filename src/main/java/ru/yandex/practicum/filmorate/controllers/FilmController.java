@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -20,10 +22,25 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-    @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        log.info("Post request for film");
-        return filmService.addFilm(film);
+    @GetMapping("/add_film")
+    public String showAddFilmForm(Model model) {
+        model.addAttribute("film", new Film());
+        return "add_film";
+    }
+
+//    @PostMapping
+//    public Film addFilm(@Valid @RequestBody Film film) {
+//        log.info("Post request for film");
+//        return filmService.addFilm(film);
+//    }
+
+    @PostMapping("/add_film")
+    public String addFilm(@ModelAttribute("film") @Valid Film film, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "add_film";
+        }
+        filmService.addFilm(film);
+        return "redirect:/films";
     }
 
     @PutMapping

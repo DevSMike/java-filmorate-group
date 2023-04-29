@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
@@ -13,16 +14,17 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Data
+@NoArgsConstructor
 public class Film {
     public static final LocalDate START_DATE = LocalDate.of(1895, 12, 28);
     private long id;
     @NotBlank(message = "Name can't be null or empty")
-    private final String name;
+    private  String name;
     @Size(max = 200, message = "Description must be no more than 200 symbols")
-    private final String description;
-    private final LocalDate releaseDate;
+    private  String description;
+    private  LocalDate releaseDate;
     @Min(value = 1L, message = "The duration must be positive")
-    private final Integer duration;
+    private  Integer duration;
     private Set<Long> likes = new HashSet<>();
     private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
     private Mpa mpa;
@@ -33,4 +35,13 @@ public class Film {
     public boolean isReleaseDateAfter() {
         return releaseDate.isAfter(START_DATE);
     }
+
+
+    public Film(String name, String description, LocalDate releaseDate, Integer duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+    }
+
 }
