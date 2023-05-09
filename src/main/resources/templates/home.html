@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+</head>
+
+<body>
+<h1>Welcome to the Filmorate</h1>
+
+<h2>Choose an option</h2>
+
+<div>
+  <form th:action="@{/films}" method="get">
+    <button type="submit">Films</button>
+  </form>
+</div>
+
+<div>
+  <form th:action="@{/users}" method="get">
+    <button type="submit">Users</button>
+  </form>
+</div>
+</body>
+
+</html>

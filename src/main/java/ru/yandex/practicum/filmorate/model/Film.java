@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
@@ -22,6 +23,7 @@ public class Film {
     private  String name;
     @Size(max = 200, message = "Description must be no more than 200 symbols")
     private  String description;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private  LocalDate releaseDate;
     @Min(value = 1L, message = "The duration must be positive")
     private  Integer duration;

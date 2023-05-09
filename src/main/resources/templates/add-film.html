@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Add new film</title>
+</head>
+
+<body>
+<h1>Add new film</h1>
+
+<form th:action="@{/films/add}" th:object="${film}" method="post">
+
+  <label for="name">Name:</label>
+  <input type="text" id="name" th:field="*{name}" />
+
+  <br/>
+
+  <label for="description">Description:</label>
+  <textarea id="description" th:field="*{description}"></textarea>
+
+  <br/>
+
+  <label for="releaseDate">Release date:</label>
+  <input type="date" id="releaseDate" th:value="*{releaseDate}" th:field="*{releaseDate}"  />
+
+  <br/>
+
+  <label for="duration">Duration:</label>
+  <input type="number" id="duration" th:field="*{duration}" />
+
+  <br/>
+
+  <label for="genre-[[${genre.id}]]">Genres:</label>
+  <br/>
+
+  <div th:each="genre : ${allGenres}">
+    <input type="checkbox" id="genre-[[${genre.id}]]" th:name="'genres'" th:value="${genre.id}" th:checked="${film.genres.contains(genre)}" />
+    <label th:for="'genre-' + ${genre.id}" th:text="${genre.name}"></label>
+    <br/>
+  </div>
+
+  <br/>
+
+  <label for="mpa">MPA rating:</label>
+  <select id="mpa" th:field="*{mpa.id}">
+    <option th:each="mpa : ${allMpa}" th:value="${mpa.id}" th:text="${mpa.name}"></option>
+  </select>
+
+  <br/>
+
+  <input type="submit" value="Add"/>
+
+</form>
+
+</body>
+
+</html>

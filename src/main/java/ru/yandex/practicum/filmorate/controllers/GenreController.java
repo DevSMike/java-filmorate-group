@@ -14,13 +14,13 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
-    private GenreService genreService;
+    private final GenreService genreService;
 
     public GenreController(GenreService genreService) {
         this.genreService = genreService;
     }
 
-    @GetMapping
+    @GetMapping("/get")
     public Collection<Genre> getAllGenres() {
         log.info("Post request for getAllGenres");
         return genreService.getAll();
