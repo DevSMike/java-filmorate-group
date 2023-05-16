@@ -1,0 +1,66 @@
+<!-- films-for-director.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Films for Director</title>
+</head>
+<body>
+<h1>Films for Director</h1>
+<form th:action="@{/films/director/films}" method="post">
+  <label for="directorId">Director:</label>
+  <select id="directorId" name="id">
+    <option th:each="director : ${directors}" th:value="${director.id}" th:text="${director.name}"></option>
+  </select>
+  <br>
+
+  <label for="sortBy">Sort By:</label>
+  <select id="sortBy" name="sortBy">
+    <option value="likes" th:text="Likes"></option>
+    <option value="year" th:text="Year"></option>
+  </select>
+  <br>
+
+  <button type="submit">Get Films</button>
+</form>
+<!-- Films List -->
+<h2>Films List</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Release Date</th>
+    <th>Duration</th>
+    <th>Likes</th>
+    <th>Genres</th>
+    <th>MPA</th>
+    <th>Rate</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="film : ${films}">
+    <td th:text="${film.name}"></td>
+    <td th:text="${film.description}"></td>
+    <td th:text="${film.releaseDate}"></td>
+    <td th:text="${film.duration}"></td>
+    <td th:text="${film.likes.size()}"></td>
+    <td>
+      <ul>
+        <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
+      </ul>
+    </td>
+    <td th:text="${film.mpa.name}"></td>
+    <td th:text="${film.rate}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<br>
+<div>
+  <form th:action="@{/films}" method="get">
+    <button type="submit">Get back to films</button>
+  </form>
+</div>
+</body>
+</html>

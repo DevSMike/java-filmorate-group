@@ -1,0 +1,35 @@
+<!-- directors.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Directors</title>
+</head>
+<body>
+<h1>All Directors</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    <tr th:each="director : ${directors}">
+        <td th:text="${director.id}"></td>
+        <td th:text="${director.name}"></td>
+    </tr>
+</table>
+
+<div>
+    <form th:action="@{/films/director/films}" method="get">
+        <button type="submit">Get films for director</button>
+    </form>
+</div>
+
+<br>
+<div>
+    <form th:action="@{/films}" method="get">
+        <button type="submit">Get back to films</button>
+    </form>
+</div>
+</body>
+</html>

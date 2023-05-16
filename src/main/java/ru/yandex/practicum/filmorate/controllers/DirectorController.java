@@ -25,7 +25,7 @@ public class DirectorController {
         this.directorService = directorService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public Collection<Director> getAllDirectors() {
         log.info("Get request for directors");
         return directorService.getAll();

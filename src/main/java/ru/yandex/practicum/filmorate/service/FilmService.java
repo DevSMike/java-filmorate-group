@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.EventOperations;
@@ -33,6 +34,9 @@ public class FilmService {
 
     public Film updateFilm(Film film) {
         log.debug("Updating film " + film);
+        if (film.getDirectors() != null) {
+            return filmStorage.updateFilm(FilmMapper.toUpdate(film, filmStorage.getById(film.getId())));
+        }
         return filmStorage.updateFilm(film);
     }
 

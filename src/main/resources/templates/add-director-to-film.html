@@ -1,0 +1,31 @@
+<!-- add-director-to-film.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Director to Film</title>
+</head>
+<body>
+<h1>Add Director to Film</h1>
+<form th:action="@{/films/add/director}" th:object="${form}" method="post">
+    <label for="filmName">Film:</label>
+    <select id="filmName" name="filmId" th:field="*{filmId}">
+        <option th:each="film : ${films}" th:value="${film.id}" th:text="${film.name}"></option>
+    </select>
+    <br>
+    <label for="directors">Director:</label>
+    <select id="directors" name="directorId" th:field="*{directorId}">
+        <option th:each="director : ${directors}" th:value="${director.id}" th:text="${director.name}"></option>
+    </select>
+    <br>
+
+    <button type="submit">Add Director</button>
+</form>
+
+<div>
+    <form th:action="@{/films}" method="get">
+        <button type="submit">Get back to films</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+</head>
+<body>
+<h1>User List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Login</th>
+        <th>Name</th>
+        <th>Birthday</th>
+        <th>Friends</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.login}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.birthday}"></td>
+        <td>
+            <ul>
+                <li th:each="friend : ${user.friends}">
+                    <span th:text="${friend.key}"></span>
+                </li>
+            </ul>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a th:href="@{/}">Home</a><br>
+<a th:href="@{/users/add}">Add User</a><br>
+<a th:href="@{/users/friends}">Add/Delete Friend</a><br>
+<a th:href="@{/users/friends/user}">Get info for user friends</a> <br>
+</body>
+</html>

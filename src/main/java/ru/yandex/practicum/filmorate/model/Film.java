@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,18 +17,20 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Film {
     public static final LocalDate START_DATE = LocalDate.of(1895, 12, 28);
-    private long id;
+    private Long id;
     @NotBlank(message = "Name can't be null or empty")
-    private  String name;
+    private String name;
     @Size(max = 200, message = "Description must be no more than 200 symbols")
-    private  String description;
+    private String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private  LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Min(value = 1L, message = "The duration must be positive")
-    private  Integer duration;
+    private Integer duration;
     private Set<Long> likes = new HashSet<>();
     private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
     private Mpa mpa;
