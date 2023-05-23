@@ -79,7 +79,8 @@ To use this API, follow these steps:
 2. Navigate to the project directory: `cd filmorate-api`
 3. Compile the Java source files: `javac *.java`
 
-DB Schema:
+
+## ER - diagram of the Filmorate project database:
 
 ![Schema](schema.png)
 
