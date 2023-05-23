@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Common Friends</title>
+</head>
+<body>
+<h2>Select Users</h2>
+<form th:action="@{/users/friends/user/common}" method="post">
+    <div>
+        <label for="id">User ID:</label>
+        <select id="id" name="id">
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+        </select>
+    </div>
+    <div>
+        <label for="otherId">Other User ID:</label>
+        <select id="otherId" name="otherId">
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+        </select>
+    </div>
+    <button type="submit">Get Common Friends</button>
+</form>
+
+<h2>Common Friends</h2>
+<ul>
+    <li th:each="friend : ${commonFriends}" th:text="${friend.name}"></li>
+</ul>
+
+<br>
+<div>
+    <form th:action="@{/users}" method="get">
+        <button type="submit">Get back to users</button>
+    </form>
+</div>
+</body>
+</html>

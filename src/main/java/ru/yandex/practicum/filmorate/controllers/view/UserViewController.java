@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -84,5 +86,45 @@ public class UserViewController {
         Collection<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "user-friends";
+    }
+
+    @GetMapping("/friends/user/common")
+    public String getCommonFriendsList(Model model) {
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "user-common-friends";
+    }
+
+    @PostMapping("/friends/user/common")
+    public String getCommonFriendsList(@RequestParam("id") Long id, @RequestParam("otherId") Long otherId, Model model) {
+        log.info("Get request for common friends userId: {} friendId: {}", id, otherId);
+        Collection<User> commonFriends = userService.getCommonFriendsList(id, otherId);
+        model.addAttribute("commonFriends", commonFriends);
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "user-common-friends";
+    }
+
+    @GetMapping("/feed")
+    public String getUserEventsForm(Model model) {
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "user-feed";
+    }
+
+    @PostMapping("/feed")
+    public String getUserEvents(@RequestParam("id") Long id, Model model) {
+        log.info("Get request for userId {} events", id);
+        Collection<Event> events = eventService.getUserEvents(id);
+        model.addAttribute("events", events);
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "user-feed";
+    }
+
+    @GetMapping("/{id}/recommendations")
+    public Collection<Film> getRecommendations(@PathVariable long id) {
+        log.info("Get request for recommendation for user with id: {} ", id);
+        return userService.getRecommendation(id);
     }
 }

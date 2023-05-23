@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Feed</title>
+</head>
+<body>
+<h2>Select User</h2>
+<form th:action="@{/users/feed}" method="post">
+  <div>
+    <label for="id">User:</label>
+    <select id="id" name="id">
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <button type="submit">Get User Events</button>
+</form>
+
+<h2>User Events</h2>
+<ul>
+  <li th:each="event : ${events}">
+    <span>Event ID: </span><span th:text="${event.eventId}"></span><br>
+    <span>User ID: </span><span th:text="${event.userId}"></span><br>
+    <span>Entity ID: </span><span th:text="${event.entityId}"></span><br>
+    <span>Timestamp: </span><span th:text="${event.timestamp}"></span><br>
+    <span>Event Type: </span><span th:text="${event.eventType}"></span><br>
+    <span>Operation: </span><span th:text="${event.operation}"></span><br>
+  </li>
+</ul>
+
+<br>
+<div>
+  <form th:action="@{/users}" method="get">
+    <button type="submit">Get back to users</button>
+  </form>
+</div>
+
+</body>
+</html>
