@@ -81,8 +81,8 @@ class FilmDbStorageTest {
     void deleteFilm() {
         Film film = new Film("First Movie", "First desc", LocalDate.of(2020, 3, 1), 120);
         film.setMpa(new Mpa(1, null));
-        Film filmBromDb = filmStorage.addFilm(film);
-        assertTrue(filmStorage.deleteFilm(filmStorage.getById(filmBromDb.getId())));
+        Film filmFromDb = filmStorage.addFilm(film);
+        assertTrue(filmStorage.deleteFilm(filmStorage.getById(filmFromDb.getId())));
     }
 
     @Test
@@ -130,11 +130,11 @@ class FilmDbStorageTest {
         long film1Id = filmFromDb1.getId();
         long film2Id = filmFromDb2.getId();
 
-        filmService.addLike(user1Id, film2Id);
-        filmService.addLike(user2Id, film2Id);
-        filmService.addLike(user1Id, film1Id);
+        filmService.addRate(user1Id, film2Id, 6);
+        filmService.addRate(user2Id, film2Id, 4);
+        filmService.addRate(user1Id, film1Id, 8);
 
-        assertEquals(filmService.getTopFilms(2, genreStorage.getById(2).get().getId(), 0).size(), 1, "sizes are diff");
+        assertEquals(filmService.getTopFilms(2, genreStorage.getById(1).get().getId(), 0).size(), 2, "sizes are diff");
         assertEquals(new ArrayList<>(filmService.getTopFilms(2, genreStorage.getById(2).get().getId(), 0))
                 .get(0).getName(), "First Movie", "names are diff");
         assertEquals(new ArrayList<>(filmService.getTopFilms(2, 0, 2019))

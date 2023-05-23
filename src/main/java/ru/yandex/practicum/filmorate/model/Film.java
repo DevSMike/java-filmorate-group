@@ -11,10 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Data
 @Builder
@@ -30,11 +27,11 @@ public class Film {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
     @Min(value = 1L, message = "The duration must be positive")
-    private Integer duration;
-    private Set<Long> likes = new HashSet<>();
+    private final Integer duration;
+    private Map<Long, Integer> rates = new HashMap<>();
     private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
     private Mpa mpa;
-    private int rate;
+    private double avgRate;
     private Set<Director> directors = new HashSet<>();
 
     @AssertTrue(message = "releaseDate is before 1895.12.28")

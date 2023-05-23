@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface UserStorage {
     User addUser(User user);
@@ -17,6 +18,8 @@ public interface UserStorage {
     boolean deleteUser(User user);
 
     Collection<Film> getRecommendations(long id);
+
+    Map<Long, Map<Long, Integer>> getFilmsRates();
 
     Collection<User> getCommonFriendsList(long userId, long friendId);
 

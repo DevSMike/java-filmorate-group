@@ -48,12 +48,12 @@ class UserServiceTest {
         User userFromDb2 = userService.addUser(generateUser());
         User userFromDb3 = userService.addUser(generateUser());
 
-        filmService.addLike(userFromDb1.getId(), filmWithId2.getId());
-        filmService.addLike(userFromDb1.getId(), filmWithId3.getId());
-        filmService.addLike(userFromDb2.getId(), filmWithId1.getId());
-        filmService.addLike(userFromDb3.getId(), filmWithId1.getId());
-        filmService.addLike(userFromDb3.getId(), filmWithId2.getId());
-        filmService.addLike(userFromDb3.getId(), filmWithId3.getId());
+        filmService.addRate(userFromDb1.getId(), filmWithId2.getId(), 8);
+        filmService.addRate(userFromDb1.getId(), filmWithId3.getId(), 7);
+        filmService.addRate(userFromDb2.getId(), filmWithId1.getId(), 7);
+        filmService.addRate(userFromDb3.getId(), filmWithId1.getId(),9);
+        filmService.addRate(userFromDb3.getId(), filmWithId2.getId(), 7);
+        filmService.addRate(userFromDb3.getId(), filmWithId3.getId(), 9);
 
         assertEquals(0, userService.getRecommendation(userFromDb3.getId()).size());
         assertEquals(1, userService.getRecommendation(userFromDb1.getId()).size());
@@ -62,9 +62,7 @@ class UserServiceTest {
 
     @Test
     void getRecommendationWithWrongId() {
-        Throwable thrown = assertThrows(UserNotFoundException.class, () -> {
-            userService.getRecommendation(-1);
-        });
+        Throwable thrown = assertThrows(UserNotFoundException.class, () -> userService.getRecommendation(-1));
         assertEquals("UserID: " + -1, thrown.getMessage());
     }
 }

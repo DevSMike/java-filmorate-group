@@ -51,7 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Collection<Film> getTopFilms(int size, int genreId, int year) {
         return getAllFilms().stream()
-                .sorted(Comparator.comparingInt(Film::getRate).reversed())
+                .sorted(Comparator.comparingDouble(Film::getAvgRate).reversed())
                 .limit(size)
                 .collect(Collectors.toList());
     }

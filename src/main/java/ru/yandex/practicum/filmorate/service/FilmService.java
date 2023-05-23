@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.exceptions.RateIsIncorrectException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.EventOperations;
@@ -45,33 +46,39 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
-    public void addLike(long userId, long filmId) {
+    public void addRate(long userId, long filmId, int rate) {
+        if (rate > 10 || rate < 1) {
+            throw new RateIsIncorrectException("Rate cannot be less then 1 and more then 10 at Film Id: " + filmId);
+        }
         userService.isExist(userId);
         Film film = getFilmById(filmId);
-        log.debug("Adding like to film: {} from user: {}", film, userId);
-        film.getLikes().add(userId);
+        log.debug("Adding rate {} to film: {} from user: {}", rate, film, userId);
+        film.getRates().put(userId, rate);
         filmStorage.updateFilm(film);
         eventService.addEvent(Event.builder()
                 .userId(userId)
                 .entityId(filmId)
-                .eventType(EventTypes.LIKE)
+                .eventType(EventTypes.RATE)
                 .operation(EventOperations.ADD)
                 .timestamp(Instant.now().toEpochMilli())
+                .filmRate(rate)
                 .build());
     }
 
-    public void removeLike(long userId, long filmId) {
+    public void removeRate(long userId, long filmId) {
         userService.isExist(userId);
         Film film = getFilmById(filmId);
-        log.debug("Removing like to film: {} from user: {}", film, userId);
-        film.getLikes().remove(userId);
+        int previousRate = film.getRates().get(userId);
+        log.debug("Removing rate to film: {} from user: {}", film, userId);
+        film.getRates().remove(userId);
         filmStorage.updateFilm(film);
         eventService.addEvent(Event.builder()
                 .userId(userId)
                 .entityId(filmId)
-                .eventType(EventTypes.LIKE)
+                .eventType(EventTypes.RATE)
                 .operation(EventOperations.REMOVE)
                 .timestamp(Instant.now().toEpochMilli())
+                .filmRate(previousRate)
                 .build());
     }
 

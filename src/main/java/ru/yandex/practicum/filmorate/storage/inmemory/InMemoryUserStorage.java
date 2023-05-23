@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 @Repository("inMemoryUserStorage")
 @Slf4j
@@ -60,6 +61,11 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Collection<Film> getRecommendations(long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<Long, Map<Long, Integer>> getFilmsRates() {
         throw new UnsupportedOperationException();
     }
 

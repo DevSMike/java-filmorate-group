@@ -116,11 +116,10 @@ class FilmDbStorageSearchTest {
     void filmWithTitleFoundTest() {
         Collection<Film> searchResult = filmStorage.getSearchResult("ilm2 na", "title,director");
         assertEquals(1, searchResult.size(), "Должен найти только один фильм с 'ilm2 na'");
-        assertTrue(searchResult.stream()
-                        .findFirst()
-                        .get()
-                        .getName().equals("Film2 name"),
-                "Должен найти фильм с 'Film2 name'");
+        assertEquals("Film2 name", searchResult.stream()
+                .findFirst()
+                .get()
+                .getName(), "Должен найти фильм с 'Film2 name'");
     }
 
     @Test
@@ -135,11 +134,11 @@ class FilmDbStorageSearchTest {
         fillUserDb();
         directorStorage.update(new Director(2L, "Third son"));
         Film film = filmStorage.getById(3L);
-        film.getLikes().add(1L);
+        film.getRates().put(1L, 8);
         filmStorage.updateFilm(film);
         Collection<Film> searchResult = filmStorage.getSearchResult("tHirD", "title,director");
         assertEquals(3, searchResult.iterator().next().getId(), "Первым должен быть фильм с id = 3");
-        assertEquals(1, searchResult.iterator().next().getRate(), "Первым должен быть фильм с rate = 1");
+        assertEquals(8.0, searchResult.iterator().next().getAvgRate(), "Первым должен быть фильм с rate = 1");
     }
 
     @Test
@@ -147,14 +146,14 @@ class FilmDbStorageSearchTest {
         fillUserDb();
         directorStorage.update(new Director(2L, "Third son"));
         Film film = filmStorage.getById(3L);
-        film.getLikes().add(1L);
+        film.getRates().put(1L, 8);
         filmStorage.updateFilm(film);
         film = filmStorage.getById(2L);
-        film.getLikes().add(1L);
-        film.getLikes().add(2L);
+        film.getRates().put(1L, 9);
+        film.getRates().put(2L, 7);
         filmStorage.updateFilm(film);
         Collection<Film> searchResult = filmStorage.getSearchResult("tHirD", "title,director");
         assertEquals(2, searchResult.iterator().next().getId(), "Первым должен быть фильм с id = 2");
-        assertEquals(2, searchResult.iterator().next().getRate(), "Первым должен быть фильм с rate = 2");
+        assertEquals(8.0, searchResult.iterator().next().getAvgRate(), "Первым должен быть фильм с rate = 2");
     }
 }

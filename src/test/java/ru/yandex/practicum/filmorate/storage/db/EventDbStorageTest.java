@@ -69,7 +69,7 @@ class EventDbStorageTest {
     @Test
     void getUserEventsCorrect() {
         userService.addFriend(userId, user2Id);
-        filmService.addLike(userId, filmId);
+        filmService.addRate(userId, filmId, 6);
         System.out.println(eventStorage.getUserEvents(userId));
         assertEquals(eventStorage.getUserEvents(userId).size(), 2, "sizes are diff");
         assertEquals((new ArrayList<>(eventStorage.getUserEvents(userId)))

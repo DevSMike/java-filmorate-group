@@ -77,10 +77,11 @@ class CommonFilmsDbStorageTest {
     @Order(2)
     void getCommonFilmsWithDifferentLikesTest() {
         Film film1 = filmStorage.getById(fid1);
-        film1.getLikes().add(uid1);
+        film1.getRates().put(uid1, 6);
 
         Film film2 = filmStorage.getById(fid2);
-        film2.getLikes().add(uid2);
+
+        film2.getRates().put(uid1, 8);
         filmStorage.updateFilm(film2);
 
         Collection<Film> common = filmStorage.getCommonFilms(uid1, uid2);
@@ -91,8 +92,8 @@ class CommonFilmsDbStorageTest {
     @Order(3)
     void getCommonSingleFilmTest() {
         Film film = filmStorage.getById(fid3);
-        film.getLikes().add(uid1);
-        film.getLikes().add(uid2);
+        film.getRates().put(uid1, 7);
+        film.getRates().put(uid2, 8);
         filmStorage.updateFilm(film);
 
         Collection<Film> common = filmStorage.getCommonFilms(uid1, uid2);
@@ -104,8 +105,13 @@ class CommonFilmsDbStorageTest {
     @Order(4)
     void getSeveralCommonFilmsTest() {
         Film film = filmStorage.getById(fid2);
-        film.getLikes().add(uid1);
+        film.getRates().put(uid1, 7);
         filmStorage.updateFilm(film);
+
+        Film film2 = filmStorage.getById(fid2);
+        film2.getRates().put(uid2, 8);
+        filmStorage.updateFilm(film2);
+
         Collection<Film> common = filmStorage.getCommonFilms(uid1, uid2);
         assertEquals(2, common.size(), "У пользователей должен быть два общих фильма");
     }
@@ -114,7 +120,7 @@ class CommonFilmsDbStorageTest {
     @Order(5)
     void getCommonFilmsOneLikeRemovedTest() {
         Film film = filmStorage.getById(fid3);
-        film.getLikes().remove(uid1);
+        film.getRates().remove(uid1);
         filmStorage.updateFilm(film);
         Collection<Film> common = filmStorage.getCommonFilms(uid1, uid2);
         assertEquals(1, common.size(), "У пользователей должен быть один общий фильм");

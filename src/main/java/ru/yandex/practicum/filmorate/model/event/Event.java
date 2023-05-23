@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model.event;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @AllArgsConstructor
@@ -18,5 +19,7 @@ public class Event {
     final EventTypes eventType;
     @NonNull
     final EventOperations operation;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    final int filmRate;
 }
 

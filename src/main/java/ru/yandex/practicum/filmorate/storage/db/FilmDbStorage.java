@@ -36,17 +36,19 @@ import static ru.yandex.practicum.filmorate.storage.db.MpaDbStorage.mpaMapper;
 @Primary
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
     static final String SELECT_ALL_FILMS_WITH_GENRES_LIKES_AND_DIRECTORS = "SELECT f.name AS f_name, description, " +
-            "release_date, duration, rate, f.film_id, m.mpa_id, m.mpa_name, g.genre_id, g.name, l.user_id, " +
+            "release_date, duration, rate, f.film_id, m.mpa_id, m.mpa_name, g.genre_id, g.name, l.user_id, l.film_rate, " +
             "d.director_id, d.director_name " +
             "FROM film AS f " +
             "LEFT JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
             "LEFT JOIN film_genre AS fg ON f.film_id = fg.film_id " +
             "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
-            "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+            "LEFT JOIN film_rates AS l ON f.film_id = l.film_id " +
             "LEFT JOIN director_film AS fd ON f.film_id = fd.film_id " +
             "LEFT JOIN director AS d ON fd.director_id = d.director_id";
+
     static final ResultSetExtractor<List<Film>> filmWithGenresAndLikesExtractor = rs -> {
         Map<Long, Film> filmMap = new LinkedHashMap<>();
         Film film;
@@ -59,7 +61,7 @@ public class FilmDbStorage implements FilmStorage {
                 LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
                 Integer duration = rs.getInt("duration");
                 film = new Film(name, description, releaseDate, duration);
-                film.setRate(rs.getInt("rate"));
+                film.setAvgRate(rs.getDouble("rate"));
                 film.setId(rs.getLong("film_id"));
                 film.setMpa(mpaMapper.mapRow(rs, 0));
                 filmMap.put(filmId, film);
@@ -68,10 +70,11 @@ public class FilmDbStorage implements FilmStorage {
             if (rs.getInt("genre_id") != 0) {
                 genres.add(genreMapper.mapRow(rs, 0));
             }
-            Set<Long> likes = film.getLikes();
+            Map<Long, Integer> rates = film.getRates();
             Long userId = rs.getLong("user_id");
-            if (userId != 0) {
-                likes.add(userId);
+            Integer userRate = rs.getInt("film_rate");
+            if (userId != 0 && userRate != 0) {
+                rates.put(userId, userRate);
             }
             Set<Director> directors = film.getDirectors();
             if (rs.getLong("director_id") != 0) {
@@ -94,18 +97,21 @@ public class FilmDbStorage implements FilmStorage {
                 .addValue("desc", film.getDescription())
                 .addValue("release_date", film.getReleaseDate())
                 .addValue("duration", film.getDuration())
-                .addValue("rate", film.getLikes().size())
+                .addValue("rate", film.getRates().values().stream().mapToInt(x -> x)
+                        .average().orElse(0.0) * 10 / 10.0)
                 .addValue("mpa", film.getMpa().getId());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, sqlParameterSource, keyHolder);
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         log.debug("Film added with id: " + id);
-        Set<Long> likes = film.getLikes();
-        if (likes != null && !likes.isEmpty()) {
-            log.debug("Update likes for film with id: " + id);
-            sql = "INSERT INTO film_likes (film_id, user_id) VALUES (:id, :user)";
-            SqlParameterSource[] params = likes.stream()
-                    .map(likeId -> new MapSqlParameterSource().addValue("user", likeId)
+        Map<Long, Integer> rates = film.getRates();
+        if (rates != null && !rates.isEmpty()) {
+            log.debug("Update rates for film with id: " + id);
+            sql = "INSERT INTO film_rates (film_id, user_id, film_rate) VALUES (:id, :user, :rate)";
+            SqlParameterSource[] params = rates.entrySet().stream()
+                    .map(mapEntry -> new MapSqlParameterSource()
+                            .addValue("user", mapEntry.getKey())
+                            .addValue("rate", mapEntry.getValue())
                             .addValue("id", id))
                     .toArray(SqlParameterSource[]::new);
             jdbcTemplate.batchUpdate(sql, params);
@@ -115,7 +121,8 @@ public class FilmDbStorage implements FilmStorage {
             log.debug("Update genres for film with id: " + id);
             sql = "INSERT INTO film_genre (film_id, genre_id) VALUES (:id, :genre)";
             SqlParameterSource[] params = genres.stream()
-                    .map(genre -> new MapSqlParameterSource().addValue("genre", genre.getId())
+                    .map(genre -> new MapSqlParameterSource()
+                            .addValue("genre", genre.getId())
                             .addValue("id", id))
                     .toArray(SqlParameterSource[]::new);
             jdbcTemplate.batchUpdate(sql, params);
@@ -125,7 +132,8 @@ public class FilmDbStorage implements FilmStorage {
             log.debug("Update directors for film with id: " + id);
             sql = "INSERT INTO director_film (film_id, director_id) VALUES (:id, :director_id)";
             SqlParameterSource[] params = directors.stream()
-                    .map(director -> new MapSqlParameterSource().addValue("id", id)
+                    .map(director -> new MapSqlParameterSource()
+                            .addValue("id", id)
                             .addValue("director_id", director.getId()))
                     .toArray(SqlParameterSource[]::new);
             jdbcTemplate.batchUpdate(sql, params);
@@ -151,19 +159,20 @@ public class FilmDbStorage implements FilmStorage {
                 .addValue("name", film.getName())
                 .addValue("release_date", film.getReleaseDate())
                 .addValue("duration", film.getDuration())
-                .addValue("rate", film.getLikes().size())
+                .addValue("rate", film.getRates().values().stream().mapToInt(x -> x)
+                        .average().orElse(0.0) * 10 / 10.0)
                 .addValue("mpa", film.getMpa().getId());
         jdbcTemplate.update(sql, sqlParameterSource);
         log.debug("Update film with id: " + id);
-        Set<Long> likes = film.getLikes();
-        jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = :id", Map.of("id", id));
-        if (likes != null && !likes.isEmpty()) {
-            sql = "INSERT INTO film_likes (film_id, user_id) VALUES(:id, :user)";
+        Map<Long, Integer> rates = film.getRates();
+        jdbcTemplate.update("DELETE FROM film_rates WHERE film_id = :id", Map.of("id", id));
+        if (rates != null && !rates.isEmpty()) {
+            sql = "INSERT INTO film_rates (film_id, user_id, film_rate) VALUES(:id, :user, :rate)";
             log.debug("Updating likes for film with id: " + id);
-            SqlParameterSource[] params = likes.stream()
-                    .map(likeId -> new MapSqlParameterSource().addValue("user", likeId)
-                            .addValue("id", id))
-                    .toArray(SqlParameterSource[]::new);
+            SqlParameterSource[] params = rates.entrySet().stream()
+                    .map(mapEntry -> new MapSqlParameterSource().addValue("user", mapEntry.getKey())
+                            .addValue("rate", mapEntry.getValue())
+                            .addValue("id", id)).toArray(SqlParameterSource[]::new);
             jdbcTemplate.batchUpdate(sql, params);
         }
         Set<Genre> genres = film.getGenres();
@@ -281,10 +290,10 @@ public class FilmDbStorage implements FilmStorage {
     public Collection<Film> getCommonFilms(long uid, long fid) {
         String sql = SELECT_ALL_FILMS_WITH_GENRES_LIKES_AND_DIRECTORS +
                 " WHERE f.film_id IN (" +
-                    "SELECT film_id FROM film_likes WHERE user_id = :uid1 " +
-                    "INTERSECT " +
-                    "SELECT film_id FROM film_likes WHERE user_id = :uid2 " +
-                 ") ORDER BY rate DESC;";
+                "SELECT film_id FROM film_rates WHERE user_id = :uid1 " +
+                "INTERSECT " +
+                "SELECT film_id FROM film_rates WHERE user_id = :uid2 " +
+                ") ORDER BY rate DESC;";
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("uid1", uid)
                 .addValue("uid2", fid);

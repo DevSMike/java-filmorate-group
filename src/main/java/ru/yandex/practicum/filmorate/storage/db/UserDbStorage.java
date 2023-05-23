@@ -161,13 +161,32 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<Film> getRecommendations(long id) {
         String sql = SELECT_ALL_FILMS_WITH_GENRES_LIKES_AND_DIRECTORS + " WHERE f.film_id IN (" +
-                "SELECT f.film_id FROM film_likes AS f " +
-                "JOIN (SELECT f3.user_id FROM film_likes AS f2 " +
-                "LEFT JOIN film_likes AS f3 ON f2.film_id = f3.film_id WHERE f2.user_id = :id AND f3.user_id <> f2.user_id " +
+                "SELECT f.film_id FROM film_rates AS f " +
+                "JOIN (SELECT f3.user_id FROM film_rates AS f2 " +
+                "LEFT JOIN film_rates AS f3 ON f2.film_id = f3.film_id WHERE f2.user_id = :id AND f3.user_id <> f2.user_id " +
                 "GROUP BY f3.user_id ORDER BY COUNT(f3.film_id) DESC LIMIT 1) AS f1 ON f.user_id = f1.user_id " +
-                "WHERE f.film_id NOT IN (SELECT film_id FROM film_likes WHERE user_id = :id))";
+                "WHERE f.film_rate >= 6 AND f.film_id NOT IN (SELECT film_id FROM film_rates WHERE user_id = :id))";
         log.debug("Getting recommendation films for user " + id);
         return jdbcTemplate.query(sql, Map.of("id", id), filmWithGenresAndLikesExtractor);
+    }
+
+    @Override
+    public Map<Long, Map<Long, Integer>> getFilmsRates() {
+        String sql = "SELECT user_id, film_id, film_rate FROM film_rates";
+        Map<Long, Map<Long, Integer>> rates = new HashMap<>();
+        log.debug("Получаем оценки ко всем фильмам из film_rates");
+        jdbcTemplate.getJdbcTemplate().query(sql, (rs, rowNumber) ->
+        {
+            Long fid = rs.getLong("film_id");
+            Long uid = rs.getLong("user_id");
+            Integer rate = rs.getInt("film_rate");
+            if (!rates.containsKey(uid)) {
+                rates.put(uid, new HashMap<>());
+            }
+            rates.get(uid).put(fid, rate);
+            return null;
+        });
+        return rates;
     }
 
     @Override

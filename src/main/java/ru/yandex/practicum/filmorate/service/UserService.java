@@ -9,20 +9,31 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.EventOperations;
 import ru.yandex.practicum.filmorate.model.event.EventTypes;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class UserService {
     private final UserStorage userStorage;
     private final EventService eventService;
+    private final RecommendationService recommendationService;
+    private final FilmStorage filmStorage;
 
-    public UserService(@Qualifier("UserDbStorage")UserStorage userStorage, EventService eventService) {
+    public UserService(@Qualifier("UserDbStorage")UserStorage userStorage,
+                       EventService eventService,
+                       RecommendationService recommendationService,
+                       @Qualifier("FilmDbStorage")FilmStorage filmStorage) {
         this.userStorage = userStorage;
         this.eventService = eventService;
+        this.recommendationService = recommendationService;
+        this.filmStorage = filmStorage;
     }
 
     public User addUser(User user) {
@@ -51,8 +62,6 @@ public class UserService {
                 .entityId(friendId)
                 .eventType(EventTypes.FRIEND)
                 .operation(EventOperations.ADD)
-                .eventType(EventTypes.FRIEND)
-                .operation(EventOperations.ADD)
                 .timestamp(Instant.now().toEpochMilli())
                 .build());
     }
@@ -66,8 +75,6 @@ public class UserService {
         eventService.addEvent(Event.builder()
                 .userId(userId)
                 .entityId(friendId)
-                .eventType(EventTypes.FRIEND)
-                .operation(EventOperations.REMOVE)
                 .eventType(EventTypes.FRIEND)
                 .operation(EventOperations.REMOVE)
                 .timestamp(Instant.now().toEpochMilli())
@@ -106,7 +113,21 @@ public class UserService {
     public Collection<Film> getRecommendation(long id) {
         isExist(id);
         log.debug("Getting recommendation films for user " + id);
-        return userStorage.getRecommendations(id);
+        Map<Long, Map<Long, Integer>> filmsRates = userStorage.getFilmsRates();
+        Map<Long, Double> recommendationFiltered = recommendationService.getRecommendationFiltered(filmsRates, id);
+        if (filmsRates.get(id).isEmpty() || recommendationFiltered.isEmpty()) {
+            return filmStorage.getTopFilms(10, 0,0);
+        }
+
+        List<Film> filmList = recommendationFiltered.entrySet().stream()
+                .filter(e -> e.getValue() > 5.0)
+                .map(e -> filmStorage.getById(e.getKey()))
+                .collect(Collectors.toList());
+        if (filmList.isEmpty()) {
+            return filmStorage.getTopFilms(10, 0,0);
+        } else {
+            return filmList;
+        }
     }
 
     public void isExist(Long id) {

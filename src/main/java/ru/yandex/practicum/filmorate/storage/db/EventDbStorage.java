@@ -21,10 +21,10 @@ public class EventDbStorage implements EventStorage {
 
     @Override
     public void addEvent(Event event) {
-        String sql = "INSERT INTO event (user_id, entity_id, time_stamp, event_type, operation) " +
-                "VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO event (user_id, entity_id, time_stamp, event_type, operation, rate) " +
+                "VALUES (?, ?, ?, ?, ?, ?);";
         jdbcTemplate.update(sql, event.getUserId(), event.getEntityId(), event.getTimestamp(),
-                event.getEventType().toString(), event.getOperation().toString());
+                event.getEventType().toString(), event.getOperation().toString(), event.getFilmRate());
     }
 
     @Override
@@ -47,6 +47,7 @@ public class EventDbStorage implements EventStorage {
                 .timestamp(rs.getLong("time_stamp"))
                 .eventType(EventTypes.valueOf(rs.getString("event_type")))
                 .operation(EventOperations.valueOf(rs.getString("operation")))
+                .filmRate(rs.getInt("rate"))
                 .build();
     }
 }
