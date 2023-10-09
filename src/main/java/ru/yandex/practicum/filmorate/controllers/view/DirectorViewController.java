@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
 
@@ -39,4 +37,12 @@ public class DirectorViewController {
         model.addAttribute("directors", directors);
         return "directors";
     }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam("id") long id) {
+        log.info("Delete request for director {}", id);
+        directorService.delete(id);
+        return "redirect:/films";
+    }
+
 }

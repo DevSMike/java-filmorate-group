@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
@@ -22,6 +23,8 @@ public class UserViewController {
 
     private final UserService userService;
     private final EventService eventService;
+    private final FilmService filmService;
+
 
     @GetMapping("/add")
     public String addUserForm(Model model) {
@@ -44,10 +47,34 @@ public class UserViewController {
         return "users";
     }
 
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable long userId) {
+    @PostMapping("/delete")
+    public String deleteUser(@RequestParam long userId) {
         log.info("Delete request to remove user with id {}", userId);
         userService.deleteUser(userId);
+        return "redirect:/users";
+    }
+
+    @GetMapping("/rates")
+    public String addRateForm(Model model) {
+        Collection<Film> films = filmService.getAllFilms();
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("films", films);
+        model.addAttribute("users", users);
+        return "film-rates";
+    }
+
+    @PostMapping("/rates/add")
+    public String addRate(Long filmId, Long userId, Integer rate) {
+        log.info("Put request to add rate {} to film: {} from user: {}", rate, filmId, userId);
+        filmService.addRate(userId, filmId, rate);
+        return "redirect:/users";
+    }
+
+    @PostMapping("/rates/delete")
+    public String deleteRate(Long filmId, Long userId) {
+        log.info("Delete request to remove rate from film: {} from user: {}", filmId, userId);
+        filmService.removeRate(userId, filmId);
+        return "redirect:/users";
     }
 
     @GetMapping("/friends")
@@ -58,14 +85,14 @@ public class UserViewController {
     }
 
     @PostMapping("friends/add")
-    public String addFriend( long userId,  long friendId) {
+    public String addFriend(long userId, long friendId) {
         log.info("Put request to add friend id: {} friendId: {}", userId, friendId);
         userService.addFriend(userId, friendId);
         return "redirect:/users";
     }
 
     @PostMapping("friends/delete")
-    public String deleteFriend( long userId, long friendId) {
+    public String deleteFriend(long userId, long friendId) {
         log.info("Put request to delete friend id: {} friendId: {}", userId, friendId);
         userService.removeFriend(userId, friendId);
         return "redirect:/users";
@@ -127,4 +154,21 @@ public class UserViewController {
         log.info("Get request for recommendation for user with id: {} ", id);
         return userService.getRecommendation(id);
     }
+
+    @GetMapping("/films/common")
+    public String getCommonFilmsForm(Model model) {
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "films-common";
+    }
+    @PostMapping("/films/common")
+    public String getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId, Model model) {
+        log.info("Get common films for users: {} {}", userId, friendId);
+        Collection<Film> commonFilms = filmService.getCommonFilms(userId, friendId);
+        model.addAttribute("commonFilms", commonFilms);
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "films-common";
+    }
+
 }
