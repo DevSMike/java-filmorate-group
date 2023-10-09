@@ -4,6 +4,42 @@
 <head>
   <meta charset="UTF-8">
   <title>Home</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    h2 {
+      color: #666;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    div {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #337ab7;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #23527c;
+    }
+  </style>
 </head>
 
 <body>
@@ -20,6 +56,18 @@
 <div>
   <form th:action="@{/users}" method="get">
     <button type="submit">Users</button>
+  </form>
+</div>
+
+<div>
+  <form th:action="@{/reviews}" method="get">
+    <button type="submit">Reviews</button>
+  </form>
+</div>
+
+<div>
+  <form th:action="@{/application/login}" method="get">
+    <button type="submit">Application</button>
   </form>
 </div>
 </body>
