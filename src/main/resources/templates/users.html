@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+</head>
+<body>
+<h1>User List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Login</th>
+        <th>Name</th>
+        <th>Birthday</th>
+        <th>Friends</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.login}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.birthday}"></td>
+        <td>
+            <ul>
+                <li th:each="friend : ${user.friends}">
+                    <span th:text="${friend.key}"></span>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <form th:action="@{/users/delete}" method="post">
+                <input type="hidden" name="userId" th:value="${user.id}" />
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a th:href="@{/}">Home</a><br>
+<a th:href="@{/users/add}">Add User</a><br>
+<a th:href="@{/users/friends}">Add/Delete Friend</a><br>
+<a th:href="@{/users/friends/user}">Get info for user friends</a> <br>
+<a th:href="@{users/friends/user/common}">Get info for user common friends</a> <br>
+<a th:href="@{/users/films/common}">Get users common films</a> <br>
+<a th:href="@{/users/feed}">Get user feed</a><br>
+<a th:href="@{/users/rates}">Set a film rate</a><br>
+</body>
+</html>

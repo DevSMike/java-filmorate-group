@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controllers.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +17,7 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("/directors")
+@RequestMapping("/api/directors")
 public class DirectorController {
     private final DirectorService directorService;
 
@@ -25,7 +25,7 @@ public class DirectorController {
         this.directorService = directorService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public Collection<Director> getAllDirectors() {
         log.info("Get request for directors");
         return directorService.getAll();

@@ -1,6 +1,10 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
@@ -10,16 +14,20 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Film {
     public static final LocalDate START_DATE = LocalDate.of(1895, 12, 28);
-    private long id;
+    private Long id;
     @NotBlank(message = "Name can't be null or empty")
-    private final String name;
+    private  String name;
     @Size(max = 200, message = "Description must be no more than 200 symbols")
-    private final String description;
-    private final LocalDate releaseDate;
+    private  String description;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private  LocalDate releaseDate;
     @Min(value = 1L, message = "The duration must be positive")
-    private final Integer duration;
+    private  Integer duration;
     private Map<Long, Integer> rates = new HashMap<>();
     private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
     private Mpa mpa;
@@ -29,5 +37,12 @@ public class Film {
     @AssertTrue(message = "releaseDate is before 1895.12.28")
     public boolean isReleaseDateAfter() {
         return releaseDate.isAfter(START_DATE);
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, Integer duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
     }
 }

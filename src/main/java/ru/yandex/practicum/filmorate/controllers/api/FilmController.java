@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controllers.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("/films")
+@RequestMapping("/api/films")
 public class FilmController {
 
     private final FilmService filmService;
@@ -32,7 +32,7 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
-    @GetMapping
+    @GetMapping()
     public Collection<Film> getAllFilms() {
         log.info("Get request for films");
         return filmService.getAllFilms();

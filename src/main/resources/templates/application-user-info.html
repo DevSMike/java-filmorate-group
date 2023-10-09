@@ -1,0 +1,184 @@
+<!-- application-user-info.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    div {
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      color: #555;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    form {
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007bff;
+      background-color: transparent;
+      border: 1px solid #007bff;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+
+    .film-item {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+     /* Стиль для таблицы */
+     table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  /* Стиль для заголовков столбцов */
+  th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Стиль для ячеек таблицы */
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Стиль для последней ячейки в строке */
+  td:last-child {
+    border-bottom: none;
+  }
+  </style>
+</head>
+<body>
+<h1>User Info</h1>
+<div>
+  <h3>User Details</h3>
+  <p>User Name: <span th:text="${userById.name}"></span></p>
+  <p>User Login: <span th:text="${userById.login}"></span></p>
+  <p>User Email: <span th:text="${userById.email}"></span></p>
+</div>
+
+<div>
+  <h3>Friends</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Login</th>
+      <th>Birthday</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="friend : ${friends}">
+      <td th:text="${friend.name}"></td>
+      <td th:text="${friend.login}"></td>
+      <td th:text="${friend.birthday}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <h3>Common Friends</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Login</th>
+      <th>Birthday</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${friends.contains(currentUser)}" th:each="commonFriend : ${commonFriends}">
+      <td th:text="${commonFriend.name}"></td>
+      <td th:text="${commonFriend.login}"></td>
+      <td th:text="${commonFriend.birthday}"></td>
+    </tr>
+    <tr th:unless="${friends.contains(currentUser)}">
+      <td colspan="3">No common friends</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <h3>Common Films</h3>
+  <ul>
+    <li th:each="film : ${commonFilms}" class="film-item">
+      <p>Film Name: <span th:text="${film.name}"></span></p>
+      <p>Duration: <span th:text="${film.duration}"></span></p>
+      <p>Release Date: <span th:text="${film.releaseDate}"></span></p>
+    </li>
+  </ul>
+</div>
+
+<div th:if="${not friends.contains(currentUser)}">
+  <form th:action="@{/application/add/{id}/friends/{friendId}(id=${userById.id}, friendId=${currentUser.id})}" method="post">
+    <button type="submit">Add Friend</button>
+  </form>
+</div>
+
+<div th:if="${friends.contains(currentUser)}">
+  <form th:action="@{/application/delete/{id}/friends/{friendId}(id=${userById.id}, friendId=${currentUser.id})}" method="post">
+    <button type="submit">Delete Friend</button>
+  </form>
+</div>
+
+<a class="back-button" href="javascript:history.back()">Назад</a>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!-- films-for-director.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Films for Director</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    select {
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007bff;
+      background-color: transparent;
+      border: 1px solid #007bff;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<h1>Films for Director</h1>
+<form th:action="@{/films/director/films}" method="post">
+  <label for="directorId">Director:</label>
+  <select id="directorId" name="id">
+    <option th:each="director : ${directors}" th:value="${director.id}" th:text="${director.name}"></option>
+  </select>
+  <br>
+
+  <label for="sortBy">Sort By:</label>
+  <select id="sortBy" name="sortBy">
+    <option value="likes" th:text="Likes"></option>
+    <option value="year" th:text="Year"></option>
+  </select>
+  <br>
+
+  <button type="submit">Get Films</button>
+</form>
+<!-- Films List -->
+<h2>Films List</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Release Date</th>
+    <th>Duration</th>
+    <th>Likes</th>
+    <th>Genres</th>
+    <th>MPA</th>
+    <th>Rate</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="film : ${films}">
+    <td th:text="${film.name}"></td>
+    <td th:text="${film.description}"></td>
+    <td th:text="${film.releaseDate}"></td>
+    <td th:text="${film.duration}"></td>
+    <td th:text="${film.rates.size()}"></td>
+    <td>
+      <ul>
+        <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
+      </ul>
+    </td>
+    <td th:text="${film.mpa.name}"></td>
+    <td th:text="${film.avgRate}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<br>
+<button id="print-button" style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;" onclick="window.print()">Print Results</button>
+<br>
+</div>
+<a class="back-button" href="/application/films/">Назад</a>
+</div>
+</body>
+</html>

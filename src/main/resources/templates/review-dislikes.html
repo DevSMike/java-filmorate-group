@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- Review Dislikes Form -->
+<h1>Review Dislikes</h1>
+
+<!-- Form to dislike a review -->
+<form th:action="@{/reviews/dislike/add}" method="post">
+  <div>
+    <label for="reviewId">Select Review:</label>
+    <select id="reviewId" name="reviewId" required>
+      <option th:each="review : ${reviews}" th:value="${review.reviewId}" th:text="${review.content}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="userId">Select User:</label>
+    <select id="userId" name="userId" required>
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <button type="submit">Dislike Review</button>
+</form>
+
+<!-- Form to delete a dislike -->
+<form th:action="@{/reviews/dislike/delete}" method="post">
+  <div>
+    <label for="reviewId">Select Review:</label>
+    <select id="review" name="reviewId" required>
+      <option th:each="review : ${reviews}" th:value="${review.reviewId}" th:text="${review.content}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="userId">Select User:</label>
+    <select id="user" name="userId" required>
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <button type="submit">Delete Dislike</button>
+</form>
+
+</body>
+</html>

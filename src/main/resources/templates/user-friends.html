@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Friends List</title>
+</head>
+<body>
+<h1>Friends List</h1>
+
+<form th:action="@{/users/friends/user}" method="post">
+  <label for="user">User:</label>
+  <select id="user" name="selectedUserId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+  </select>
+  <br>
+  <button type="submit">Get Friends List</button>
+</form>
+
+<h2>Friends List</h2>
+<ul th:if="${friends}">
+  <li th:each="friend : ${friends}">
+    <p><strong>Name:</strong> <span th:text="${friend.name}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${friend.email}"></span></p>
+    <p><strong>Login:</strong> <span th:text="${friend.login}"></span></p>
+    <p><strong>Birthday:</strong> <span th:text="${friend.birthday}"></span></p>
+    <hr>
+  </li>
+</ul>
+
+<br>
+<div>
+  <form th:action="@{/users}" method="get">
+    <button type="submit">Get back to users</button>
+  </form>
+</div>
+</body>
+</html>

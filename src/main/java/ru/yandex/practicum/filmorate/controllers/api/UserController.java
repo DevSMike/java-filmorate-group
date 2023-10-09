@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controllers.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +20,7 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -32,7 +32,7 @@ public class UserController {
         this.eventService = eventService;
     }
 
-    @PostMapping
+    @PostMapping()
     public User addUser(@Valid @RequestBody User user) {
         log.info("Post request for user");
         return userService.addUser(user);
@@ -44,7 +44,7 @@ public class UserController {
         return userService.updateUser(user);
     }
 
-    @GetMapping
+    @GetMapping()
     public Collection<User> getAllUsers() {
         log.info("Get request for users");
         return userService.getAllUsers();
@@ -80,7 +80,7 @@ public class UserController {
         return userService.getCommonFriendsList(id, otherId);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/user/{userId}")
     public void deleteUser(@PathVariable long userId) {
         log.info("Delete request to remove user with id {}", userId);
         userService.deleteUser(userId);

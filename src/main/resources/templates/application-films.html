@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Films</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    form input[type="text"],
+    form select {
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-right: 10px;
+    }
+
+    form button[type="submit"] {
+      padding: 8px 16px;
+      font-size: 14px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    .profile {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .profile h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .profile p {
+      margin: 5px 0;
+    }
+
+    .profile ul {
+      margin: 5px 0;
+      padding-left: 20px;
+    }
+
+    .user-feed-button {
+      padding: 8px 16px;
+      font-size: 14px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .back-button {
+      padding: 8px 16px;
+      font-size: 14px;
+      background-color: #ccc;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+     .form-container {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .form-container form {
+    margin-right: 10px;
+  }
+
+  .form-container button[type="submit"],
+  .user-feed-button {
+    margin-bottom: 0;
+  }
+  </style>
+</head>
+<body>
+<div class="profile">
+  <h2>Welcome, <span th:text="${currentUser.name}"></span></h2>
+  <p><strong>Login:</strong> <span th:text="${currentUser.login}"></span></p>
+  <p><strong>Name:</strong> <span th:text="${currentUser.name}"></span></p>
+  <p><strong>Email:</strong> <span th:text="${currentUser.email}"></span></p>
+  <div>
+    <h3>Friends</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Login</th>
+        <th>Birthday</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="friend : ${friends}">
+        <td th:text="${friend.name}"></td>
+        <td th:text="${friend.login}"></td>
+        <td th:text="${friend.birthday}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<form method="post" action="/application/films/popular">
+  <button type="submit">Get Top Films</button>
+</form>
+
+<form method="post" action="/application/director/films">
+  <select name="id" required>
+    <option th:each="director : ${directors}" th:value="${director.id}" th:text="${director.name}"></option>
+  </select>
+  <br>
+  <label for="sortBy">Sort By:</label>
+  <select id="sortBy" name="sortBy">
+    <option value="likes">Likes</option>
+    <option value="year">Year</option>
+  </select>
+  <br>
+  <button type="submit">Get Films for Director</button>
+</form>
+
+
+<form method="post" action="/application/films/search">
+  <input type="text" name="query" placeholder="Search query" required />
+  <select name="by">
+    <option value="director">Search by Director</option>
+    <option value="title">Search by Title</option>
+  </select>
+  <button type="submit">Search Films</button>
+</form>
+<div>
+  <form method="get" action="/application/users/feed">
+    <button class="user-feed-button" type="submit">User Feed</button>
+  </form>
+</div>
+<table>
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Release Date</th>
+    <th>Duration</th>
+    <th>Genres</th>
+    <th>MPA</th>
+    <th>Avg. Rate</th>
+    <th>Directors</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="film : ${films}">
+    <td>
+      <a th:href="@{/application/film/{id}(id=${film.id})}" th:text="${film.name}"></a>
+    </td>
+    <td th:text="${film.description}"></td>
+    <td th:text="${film.releaseDate}"></td>
+    <td th:text="${film.duration}"></td>
+    <td>
+      <ul>
+        <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
+      </ul>
+    </td>
+    <td th:text="${film.mpa.name}"></td>
+    <td th:text="${film.avgRate}"></td>
+    <td>
+      <ul>
+        <li th:each="director : ${film.directors}" th:text="${director.name}"></li>
+      </ul>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  <a class="back-button" href="javascript:history.back()">Назад</a>
+</div>
+</body>
+</html>

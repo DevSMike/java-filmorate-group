@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Review</title>
+</head>
+<body>
+<h1>Add Review</h1>
+<form th:action="@{/reviews/add}" th:object="${review}" method="post">
+  <div>
+    <label for="content">Content:</label>
+    <textarea id="content" th:field="*{content}"></textarea>
+  </div>
+  <div>
+    <label for="isPositive">Positive:</label>
+    <input type="checkbox" id="isPositive" th:field="*{isPositive}" />
+  </div>
+  <div>
+    <label for="userId">User:</label>
+    <select id="userId" th:field="*{userId}">
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="filmId">Film:</label>
+    <select id="filmId" th:field="*{filmId}">
+      <option th:each="film : ${films}" th:value="${film.id}" th:text="${film.name}"></option>
+    </select>
+  </div>
+  <button type="submit">Add Review</button>
+</form>
+</body>
+</html>

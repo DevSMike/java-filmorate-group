@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Friends</title>
+</head>
+<body>
+<h1>Add Friends</h1>
+
+<form th:action="@{/users/friends/add}" method="post">
+  <label for="user">User:</label>
+  <select id="user" name="userId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+  </select>
+  <br>
+  <label for="friend">Friend:</label>
+  <select id="friend" name="friendId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+  </select>
+  <br>
+  <button type="submit">Add Friend</button>
+</form>
+
+<form th:action="@{/users/friends/delete}" method="post">
+  <label for="user">User:</label>
+  <select id="users" name="userId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+  </select>
+  <br>
+  <label for="friend">Friend:</label>
+  <select id="friends" name="friendId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+  </select>
+  <br>
+  <button type="submit">Delete Friend</button>
+</form>
+
+<br>
+<div>
+  <form th:action="@{/users}" method="get">
+    <button type="submit">Get back to users</button>
+  </form>
+</div>
+
+</body>
+</html>

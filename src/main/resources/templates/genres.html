@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Genres</title>
+</head>
+<body>
+<h1>Genres</h1>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="genre : ${genres}">
+    <td th:text="${genre.id}"></td>
+    <td th:text="${genre.name}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  <form th:action="@{/films}" method="get">
+    <button type="submit">Get back to films</button>
+  </form>
+</div>
+</body>
+</html>

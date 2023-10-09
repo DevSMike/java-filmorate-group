@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reviews</title>
+</head>
+<body>
+<h1>Reviews</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Content</th>
+        <th>Is Positive</th>
+        <th>User ID</th>
+        <th>Film ID</th>
+        <th>Useful</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="review : ${reviews}">
+        <td th:text="${review.reviewId}"></td>
+        <td th:text="${review.content}"></td>
+        <td th:text="${review.isPositive}"></td>
+        <td th:text="${review.userId}"></td>
+        <td th:text="${review.filmId}"></td>
+        <td th:text="${review.useful}"></td>
+        <td>
+            <form th:action="@{/reviews/delete}" method="post">
+                <input type="hidden" name="id" th:value="${review.reviewId}" />
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a th:href="@{/}">Home</a><br>
+<a th:href="@{/reviews/add}">Add Review</a><br>
+<a th:href="@{/reviews/likes}">Add/Delete LIKE to Review</a><br>
+<a th:href="@{/reviews/dislikes}">Add/Delete DISLIKE to Review</a><br>
+</body>
+</html>

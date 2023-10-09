@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Events</title>
+    <style>
+
+        .back-button {
+      padding: 8px 16px;
+      font-size: 14px;
+      background-color: #ccc;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+    </style>
+</head>
+<body>
+<h1>User Events</h1>
+
+<h2>User Events</h2>
+<table th:if="${not #lists.isEmpty(users)}">
+    <thead>
+    <tr>
+        <th>Timestamp</th>
+        <th>Event Type</th>
+        <th>Operation</th>
+        <th>Email</th>
+        <th>Login</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${users}">
+        <td th:text="${event.timestamp}"></td>
+        <td th:text="${event.eventType}"></td>
+        <td th:text="${event.operation}"></td>
+        <td th:text="${event.email}"></td>
+        <td th:text="${event.login}"></td>
+        <td th:text="${event.name}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Film Events</h2>
+<table th:if="${not #lists.isEmpty(films)}">
+    <thead>
+    <tr>
+        <th>Timestamp</th>
+        <th>Event Type</th>
+        <th>Operation</th>
+        <th>Film Rate</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Release Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${films}">
+        <td th:text="${event.timestamp}"></td>
+        <td th:text="${event.eventType}"></td>
+        <td th:text="${event.operation}"></td>
+        <td th:text="${event.filmRate}"></td>
+        <td th:text="${event.name}"></td>
+        <td th:text="${event.description}"></td>
+        <td th:text="${event.releaseDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Review Events</h2>
+<table th:if="${not #lists.isEmpty(reviews)}">
+    <thead>
+    <tr>
+        <th>Timestamp</th>
+        <th>Event Type</th>
+        <th>Operation</th>
+        <th>Content</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${reviews}">
+        <td th:text="${event.timestamp}"></td>
+        <td th:text="${event.eventType}"></td>
+        <td th:text="${event.operation}"></td>
+        <td th:text="${event.content}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<button id="print-button" style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;" onclick="window.print()">Print Results</button>
+<a class="back-button" href="javascript:history.back()">Назад</a>
+</body>
+</html>

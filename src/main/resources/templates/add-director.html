@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Director</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<form action="#" th:action="@{/directors/add}" th:object="${director}" method="post">
+    <p>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" required>
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+    </p>
+    <button type="submit">Create Director</button>
+</form>
+
+<div>
+    <form th:action="@{/films}" method="get">
+        <button type="submit">Get back to films</button>
+    </form>
+</div>
+</body>
+</html>

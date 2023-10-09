@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Common Films</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<form th:action="@{/users/films/common}" method="post">
+  <h2>Select Users</h2>
+  <div>
+    <label for="userId">User 1:</label>
+    <select id="userId" name="userId" required>
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="friendId">User 2:</label>
+    <select id="friendId" name="friendId" required>
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <button type="submit">Get Common Films</button>
+</form>
+
+<div>
+  <h2>Common Films</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Release Date</th>
+      <th>Duration</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="film : ${commonFilms}">
+      <td th:text="${film.id}"></td>
+      <td th:text="${film.name}"></td>
+      <td th:text="${film.description}"></td>
+      <td th:text="${film.releaseDate}"></td>
+      <td th:text="${film.duration}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+<div>
+  <form th:action="@{/films/common}" method="post">
+    <button type="submit">Get back to films</button>
+  </form>
+</div>
+</body>
+</html>

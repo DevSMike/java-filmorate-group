@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>All Rates</title>
+</head>
+<body>
+<form th:action="@{/users/rates/add}" method="post">
+  <h2>Add Rate</h2>
+  <div>
+    <label for="filmId">Film:</label>
+    <select id="filmId" name="filmId">
+      <option th:each="film : ${films}" th:value="${film.id}" th:text="${film.name}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="userId">User:</label>
+    <select id="userId" name="userId">
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="rate">Rating:</label>
+    <select id="rate" name="rate">
+      <option th:each="value : ${#numbers.sequence(1, 10)}" th:value="${value}" th:text="${value}"></option>
+    </select>
+  </div>
+  <button type="submit">Add Rate</button>
+</form>
+
+<form th:action="@{/users/rates/delete}" method="post">
+  <h2>Delete Rate</h2>
+  <div>
+    <label for="filmId">Film:</label>
+    <select id="film" name="filmId">
+      <option th:each="film : ${films}" th:value="${film.id}" th:text="${film.name}"></option>
+    </select>
+  </div>
+  <div>
+    <label for="userId">User:</label>
+    <select id="user" name="userId">
+      <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    </select>
+  </div>
+  <button type="submit">Delete Rate</button>
+</form>
+</body>
+</html>

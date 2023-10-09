@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Repository
 public class ReviewDbStorage implements ReviewStorage {
@@ -73,7 +75,9 @@ public class ReviewDbStorage implements ReviewStorage {
             statement.setLong(4, review.getFilmId());
             return statement;
         }, kh);
-        review.setReviewId(kh.getKey().longValue());
+        Map<String, Object> keys = kh.getKeys();
+        long id = (long) Objects.requireNonNull(keys).get("id");
+        review.setReviewId(id);
         return review;
     }
 
@@ -82,7 +86,6 @@ public class ReviewDbStorage implements ReviewStorage {
         String sqlQuery = "UPDATE review " +
                 "SET content = ?, is_positive = ? " +
                 "WHERE id = ?";
-        Review review1 = getReviewById(review.getReviewId());
         jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(), review.getReviewId());
         return getReviewById(review.getReviewId());
     }
@@ -93,6 +96,7 @@ public class ReviewDbStorage implements ReviewStorage {
         return jdbcTemplate.update(sqlDelete, id) > 0;
     }
 
+    //todo оптимизация на уровне запроса, а не сервиса
     @Override
     public List<Review> getMostUsefulReviews(Long filmId, Long count) {
         String sqlUseful = "SELECT r.id, r.content, r.is_positive, r.user_id, r.film_id,\n" +
@@ -117,16 +121,16 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public Review likeReview(Long id, Long userId) {
-        String sqlInsertLikes = "MERGE INTO review_likes KEY(review_id, user_id) "
-                + "VALUES (?, ?, ?)";
+        String sqlInsertLikes = "INSERT INTO review_likes (review_id, user_id, is_like) "
+                + "VALUES (?, ?, ?) ";
         jdbcTemplate.update(sqlInsertLikes, id, userId, true);
         return getReviewById(id);
     }
 
     @Override
     public Review dislikeReview(Long id, Long userId) {
-        String sqlInsertLikes = "MERGE INTO review_likes KEY(review_id, user_id) " +
-                "VALUES (?, ?, ?)";
+        String sqlInsertLikes = "INSERT INTO review_likes (review_id, user_id, is_like) "
+                + "VALUES (?, ?, ?) ";
         jdbcTemplate.update(sqlInsertLikes, id, userId, false);
         return getReviewById(id);
     }
