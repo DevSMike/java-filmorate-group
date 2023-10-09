@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -79,7 +80,9 @@ public class ReviewService {
     }
 
     public List<Review> getUsefulReviews(Long filmId, Long count) {
-        return reviewDbStorage.getMostUsefulReviews(filmId, count);
+        return reviewDbStorage.getMostUsefulReviews(filmId, count).stream()
+                .filter(x -> x.getUseful() > 0)
+                .collect(Collectors.toList());
     }
 
     public Review likeReview(Long id, Long userId) {

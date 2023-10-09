@@ -13,7 +13,7 @@ public class FilmMapper {
                 .duration(newFilm.getDuration() != null ? newFilm.getDuration() : oldFilm.getDuration())
                 .genres(newFilm.getGenres() != null ? newFilm.getGenres() : oldFilm.getGenres())
                 .releaseDate(newFilm.getReleaseDate() != null ? newFilm.getReleaseDate() : oldFilm.getReleaseDate())
-                .likes(newFilm.getLikes() != null ? newFilm.getLikes() : oldFilm.getLikes())
+                .rates(newFilm.getRates() != null ? newFilm.getRates() : oldFilm.getRates())
                 .directors(newFilm.getDirectors() != null ? newFilm.getDirectors() : oldFilm.getDirectors())
                 .build();
     }
