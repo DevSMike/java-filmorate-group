@@ -14,20 +14,20 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Data
-@Builder
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class Film {
     public static final LocalDate START_DATE = LocalDate.of(1895, 12, 28);
     private Long id;
     @NotBlank(message = "Name can't be null or empty")
-    private String name;
+    private  String name;
     @Size(max = 200, message = "Description must be no more than 200 symbols")
-    private String description;
+    private  String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate releaseDate;
+    private  LocalDate releaseDate;
     @Min(value = 1L, message = "The duration must be positive")
-    private final Integer duration;
+    private  Integer duration;
     private Map<Long, Integer> rates = new HashMap<>();
     private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
     private Mpa mpa;
@@ -39,12 +39,10 @@ public class Film {
         return releaseDate.isAfter(START_DATE);
     }
 
-
     public Film(String name, String description, LocalDate releaseDate, Integer duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
     }
-
 }
