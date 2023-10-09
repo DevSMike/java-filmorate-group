@@ -6,14 +6,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.dto.UpdateFilmDirectorDto;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmDirectorDto;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.DirectorService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.GenreService;
 import ru.yandex.practicum.filmorate.service.MpaService;
 
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Controller
 @RequestMapping("/films")
@@ -88,5 +92,40 @@ public class FilmsViewController {
         return "films-for-director";
     }
 
+    @GetMapping("/popular")
+    public String getPopularFilmsForm(Model model) {
+        Collection<Genre> genres = genreService.getAll();
+        model.addAttribute("genres", genres);
+        return "films-popular";
+    }
+
+    @PostMapping("/popular")
+    public String getTopFilms(@RequestParam(defaultValue = "10") Integer count,
+                              @RequestParam(defaultValue = "0") Integer genreId,
+                              @RequestParam(defaultValue = "0") Integer year, Model model) {
+        log.info("Get request for top {} films , genreId: {}, year: {}", count, genreId, year);
+        Collection<Film> topFilms = filmService.getTopFilms(count, genreId, year);
+        model.addAttribute("films", topFilms);
+        Collection<Genre> genres = genreService.getAll();
+        model.addAttribute("genres", genres);
+        return "films-popular";
+    }
+
+    @GetMapping("/search")
+    public String getSearchForm(Model model) {
+        List<String> searchBy = Arrays.asList("director", "title");
+        model.addAttribute("searchBy", searchBy);
+        return "films-search";
+    }
+
+    @PostMapping("/search")
+    public String getSearchResult(@RequestParam("query") @NotNull String query, @RequestParam("by") @NotNull String by, Model model) {
+        log.info("Get search request for films with query: {}, for fields {}", query, by);
+        Collection<Film> films = filmService.getSearchResult(query, by);
+        model.addAttribute("films", films);
+        List<String> searchBy = Arrays.asList("director", "title");
+        model.addAttribute("searchBy", searchBy);
+        return "films-search";
+    }
 
 }
