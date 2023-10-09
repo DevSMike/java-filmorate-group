@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>All Rates</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      display: inline-block;
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div>
+    <h2>Popular Films</h2>
+    <form th:action="@{/films/popular}" method="post">
+      <div>
+        <label for="genreId">Genre:</label>
+        <select id="genreId" name="genreId">
+          <option value="0">All Genres</option>
+          <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
+        </select>
+      </div>
+      <div>
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" min="0" value="0" />
+      </div>
+      <div>
+        <label for="count">Count:</label>
+        <input type="number" id="count" name="count" min="0" value="10" />
+      </div>
+      <button type="submit">Get Top Films</button>
+    </form>
+  </div>
+
+  <div>
+    <h2>Top Films</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Release Date</th>
+        <th>Duration</th>
+        <th>Genres</th>
+        <th>MPA</th>
+        <th>Avg. Rate</th>
+        <th>Directors</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="film : ${films}">
+        <td>
+          <a th:href="@{/application/film/{id}(id=${film.id})}" th:text="${film.name}"></a>
+        </td>
+        <td th:text="${film.description}"></td>
+        <td th:text="${film.releaseDate}"></td>
+        <td th:text="${film.duration}"></td>
+        <td>
+          <ul>
+            <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
+          </ul>
+        </td>
+        <td th:text="${film.mpa.name}"></td>
+        <td th:text="${film.avgRate}"></td>
+        <td>
+          <ul>
+            <li th:each="director : ${film.directors}" th:text="${director.name}"></li>
+          </ul>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <button id="print-button" style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;" onclick="window.print()">Print Results</button>
+  <br>
+  <a class="back-button" href="javascript:history.back()">Back</a>
+</div>
+</body>
+</html>

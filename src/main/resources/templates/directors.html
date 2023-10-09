@@ -12,10 +12,17 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
+        <th>Action</th> <!-- Добавлено поле для действия -->
     </tr>
     <tr th:each="director : ${directors}">
         <td th:text="${director.id}"></td>
         <td th:text="${director.name}"></td>
+        <td>
+            <form th:action="@{/directors/delete}" method="post">
+                <input type="hidden" th:name="id" th:value="${director.id}" />
+                <button type="submit">Delete</button>
+            </form>
+        </td>
     </tr>
 </table>
 

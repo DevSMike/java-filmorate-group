@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Useful reviews</title>
+</head>
+<body>
+
+<h1>Useful Reviews</h1>
+
+<form th:action="@{/reviews/useful}" method="post">
+    <div>
+        <label for="filmId">Select Film:</label>
+        <select id="filmId" name="filmId" required>
+            <option th:each="film : ${films}" th:value="${film.id}" th:text="${film.name}"></option>
+        </select>
+    </div>
+    <div>
+        <label for="count">Number of Reviews:</label>
+        <input type="number" id="count" name="count" min="1" value="10" required />
+    </div>
+    <button type="submit">Get Useful Reviews</button>
+</form>
+
+<!-- Display the useful reviews -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Content</th>
+        <th>Is Positive</th>
+        <th>User ID</th>
+        <th>Film ID</th>
+        <th>Useful</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="review : ${reviews}">
+        <td th:text="${review.reviewId}"></td>
+        <td th:text="${review.content}"></td>
+        <td th:text="${review.isPositive}"></td>
+        <td th:text="${review.userId}"></td>
+        <td th:text="${review.filmId}"></td>
+        <td th:text="${review.useful}"></td>
+        <td>
+            <form th:action="@{/reviews/delete}" method="post">
+                <input type="hidden" name="id" th:value="${review.reviewId}" />
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<div>
+    <form th:action="@{/films}" method="get">
+        <button type="submit">Get back to users</button>
+    </form>
+</div>
+</body>
+</html>

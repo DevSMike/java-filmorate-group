@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Film Search</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      page-break-inside: avoid; /* Не допускать перенос таблицы на следующую страницу */
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    .back-button {
+      background-color: #e6e6e6;
+      color: #333;
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Стиль для отображения таблицы при печати */
+    @media print {
+      body > *:not(#search-results):not(#print-button):not(.back-button) {
+        display: none !important;
+      }
+
+      #search-results {
+        page-break-inside: avoid; /* Не допускать перенос секции на следующую страницу */
+      }
+    }
+  </style>
+</head>
+<body>
+<form th:action="@{/films/search}" method="post">
+  <h2>Film Search</h2>
+  <div>
+    <label for="query">Query:</label>
+    <input type="text" id="query" name="query" required />
+  </div>
+  <div>
+    <label for="by">Search By:</label>
+    <select id="by" name="by" required>
+      <option th:each="option : ${searchBy}" th:value="${option}" th:text="${option}"></option>
+    </select>
+  </div>
+  <button type="submit">Search</button>
+</form>
+
+<div id="search-results">
+  <h2>Search Results</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Director</th>
+      <th>Release Date</th>
+      <th>Duration</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="film : ${films}">
+      <td>
+        <a th:href="@{/application/film/{id}(id=${film.id})}" th:text="${film.name}"></a>
+      </td>
+      <td>
+        <ul>
+          <li th:each="director : ${film.directors}" th:text="${director.name}"></li>
+        </ul>
+      </td>
+      <td th:text="${film.releaseDate}"></td>
+      <td th:text="${film.duration}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+<button id="print-button" style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;" onclick="window.print()">Print Results</button>
+
+<div>
+  <a class="back-button" href="javascript:history.back()">Назад</a>
+</div>
+</body>
+</html>

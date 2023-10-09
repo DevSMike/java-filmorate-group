@@ -4,6 +4,94 @@
 <head>
   <meta charset="UTF-8">
   <title>Films for Director</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    select {
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007bff;
+      background-color: transparent;
+      border: 1px solid #007bff;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
 <h1>Films for Director</h1>
@@ -44,23 +132,23 @@
     <td th:text="${film.description}"></td>
     <td th:text="${film.releaseDate}"></td>
     <td th:text="${film.duration}"></td>
-    <td th:text="${film.likes.size()}"></td>
+    <td th:text="${film.rates.size()}"></td>
     <td>
       <ul>
         <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
       </ul>
     </td>
     <td th:text="${film.mpa.name}"></td>
-    <td th:text="${film.rate}"></td>
+    <td th:text="${film.avgRate}"></td>
   </tr>
   </tbody>
 </table>
 
 <br>
-<div>
-  <form th:action="@{/films}" method="get">
-    <button type="submit">Get back to films</button>
-  </form>
+<button id="print-button" style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;" onclick="window.print()">Print Results</button>
+<br>
+</div>
+<a class="back-button" href="/application/films/">Назад</a>
 </div>
 </body>
 </html>

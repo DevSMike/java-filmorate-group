@@ -15,6 +15,7 @@
         <th>Name</th>
         <th>Birthday</th>
         <th>Friends</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -31,6 +32,12 @@
                 </li>
             </ul>
         </td>
+        <td>
+            <form th:action="@{/users/delete}" method="post">
+                <input type="hidden" name="userId" th:value="${user.id}" />
+                <button type="submit">Delete</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>
@@ -40,6 +47,8 @@
 <a th:href="@{/users/friends}">Add/Delete Friend</a><br>
 <a th:href="@{/users/friends/user}">Get info for user friends</a> <br>
 <a th:href="@{users/friends/user/common}">Get info for user common friends</a> <br>
+<a th:href="@{/users/films/common}">Get users common films</a> <br>
 <a th:href="@{/users/feed}">Get user feed</a><br>
+<a th:href="@{/users/rates}">Set a film rate</a><br>
 </body>
 </html>

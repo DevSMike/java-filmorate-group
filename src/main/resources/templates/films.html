@@ -14,11 +14,10 @@
     <th>Description</th>
     <th>Release Date</th>
     <th>Duration</th>
-    <th>Likes</th>
-    <th>Genres</th>
-    <th>MPA</th>
-    <th>Rate</th>
     <th>Directors</th>
+    <th>Average Rate</th>
+    <th>Genre</th>
+    <th>User Rates</th>
     <th>Action</th>
   </tr>
   </thead>
@@ -31,19 +30,18 @@
     <td th:text="${film.duration}"></td>
     <td>
       <ul>
-        <li th:each="like : ${film.likes}" th:text="${like}"></li>
+        <li th:each="director : ${film.directors}" th:text="${director.name}"></li>
       </ul>
     </td>
+    <td th:text="${film.avgRate}"></td>
     <td>
       <ul>
         <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
       </ul>
     </td>
-    <td th:text="${film.mpa.name}"></td>
-    <td th:text="${film.rate}"></td>
     <td>
       <ul>
-        <li th:each="director : ${film.directors}" th:text="${director.name}"></li>
+        <li th:each="entry : ${film.rates}" th:text="${entry.value} + ' by ' + ${entry.key}"></li>
       </ul>
     </td>
     <td>
@@ -60,6 +58,9 @@
 <a th:href="@{/films/add}">Add Film</a><br>
 <a th:href="@{/directors/add}">Add Director</a> <br>
 <a th:href="@{/films/add/director}">Add Director to Film</a> <br>
+<a th:href="@{/films/popular}">Get popular Films</a> <br>
+<a th:href="@{/films/search}">Search films</a><br>
+<a th:href="@{/reviews/useful}">Get useful reviews for film</a><br>
 <a th:href="@{/genres}">Genres</a><br>
 <a th:href="@{/directors}">Directors</a><br>
 <a th:href="@{/mpa}">Mpa-ratings</a><br>

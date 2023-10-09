@@ -1,0 +1,247 @@
+<!-- application-film-info.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Film Info</title>
+  <style>
+    .film-info-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .film-info {
+      flex: 1;
+      margin-right: 20px;
+    }
+
+    .film-info h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .film-info label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .film-info input[type="text"],
+    .film-info textarea {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .film-info ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    .film-info ul li {
+      list-style-type: none;
+    }
+
+    .reviews {
+      flex: 1;
+    }
+
+    .reviews h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .comment-container {
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .comment-author {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .comment-content {
+      margin-bottom: 5px;
+    }
+
+    .comment-type-positive {
+      color: green;
+    }
+
+    .comment-type-negative {
+      color: red;
+    }
+
+    .add-review-form {
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .add-review-form label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .add-review-form textarea {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .add-review-form button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      cursor: pointer;
+      transition-duration: 0.4s;
+    }
+
+    .add-review-form button:hover {
+      background-color: #45a049;
+    }
+
+  </style>
+</head>
+<body>
+<div class="film-info-container">
+  <div class="film-info">
+    <h1>Film Info</h1>
+    <form action="/application/film/{id}" method="post">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" th:value="${film.name}" readonly/>
+      </div>
+
+      <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" th:text="${film.description}" readonly>${film.description}</textarea>
+      </div>
+
+      <div>
+        <label for="releaseDate">Release Date:</label>
+        <input type="text" id="releaseDate" name="releaseDate" th:value="${film.releaseDate}" readonly/>
+      </div>
+
+      <div>
+        <label for="duration">Duration:</label>
+        <input type="text" id="duration" name="duration" th:value="${film.duration}" readonly/>
+      </div>
+
+      <div>
+        <label for="genres">Genres:</label>
+        <ul>
+          <li th:each="genre : ${film.genres}" th:text="${genre.name}"></li>
+        </ul>
+      </div>
+
+      <div>
+        <label for="mpa">MPA:</label>
+        <input type="text" id="mpa" name="mpa" th:value="${film.mpa.name}" readonly/>
+      </div>
+
+      <div>
+        <label for="avgRate">Average Rate:</label>
+        <input type="text" id="avgRate" name="avgRate" th:value="${film.avgRate}" readonly/>
+      </div>
+
+      <div>
+        <label for="directors">Directors:</label>
+        <ul>
+          <li th:each="director : ${film.directors}" th:text="${director.name}"></li>
+        </ul>
+      </div>
+    </form>
+
+    <form th:action="@{/application/film/rate/{filmId}/{userId}(filmId=${currentFilmId}, userId=${currentUser.id})}" method="post" th:if="${!filmRates.contains(currentUser.id)}">
+      <div>
+        <label for="rate">Rate:</label>
+        <select id="rate" name="rate" required>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <button type="submit">Add Rate</button>
+    </form>
+
+    <form th:action="@{/application/film/rate/delete/{filmId}/{userId}(filmId=${currentFilmId}, userId=${currentUser.id})}" method="post" th:if="${filmRates.contains(currentUser.id)}">
+      <button type="submit">Delete Rate</button>
+    </form>
+
+  </div>
+  <a class="back-button" href="/application/films/">Назад</a>
+  </div>
+
+<div class="reviews">
+  <h2>Reviews</h2>
+  <ul>
+    <li th:each="review : ${reviews}">
+      <div class="comment-container">
+        <div class="comment-author">
+          <a th:href="@{/application/user/{id}(id=${users.get(review.userId).getId()})}" th:text="${users.get(review.userId).getName()}"></a>
+        </div>
+        <div class="comment-content" th:text="${review.content}"></div>
+        <div th:class="${review.isPositive} ? 'comment-type-positive' : 'comment-type-negative'">
+          <span th:if="${review.isPositive}">Positive</span>
+          <span th:unless="${review.isPositive}">Negative</span>
+        </div>
+        <div>Useful: <span th:text="${review.useful}"></span></div>
+
+          <!-- Delete review button (visible only to the review creator) -->
+          <div th:if="${currentUser.id == review.userId}">
+            <form th:action="@{/application/review/delete/{reviewId}(reviewId=${review.reviewId})}" method="post">
+              <input type="hidden" name="filmId" th:value="${filmId}" />
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+
+          <div>
+            <form th:action="@{/application/review/like/add/{reviewId}/{userId}(reviewId=${review.reviewId}, userId=${currentUser.id})}" method="post">
+              <button type="submit">Like</button>
+            </form>
+          </div>
+          <!-- Dislike review button -->
+          <div>
+            <form th:action="@{/application/review/dislike/add/{reviewId}/{userId}(reviewId=${review.reviewId}, userId=${currentUser.id})}" method="post">
+              <button type="submit">Dislike</button>
+            </form>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <!-- Add review form -->
+    <div class="add-review-form" th:unless="${authors.contains(currentUser.id)}">
+      <form th:action="@{/application/review/add/{filmId}/{userId}(filmId=${currentFilmId}, userId=${currentUser.id})}" method="post">
+      <div>
+          <label for="content">Content:</label>
+          <textarea id="content" name="content" required></textarea>
+        </div>
+        <div>
+          <label for="isPositive">Is Positive:</label>
+          <input type="checkbox" id="isPositive" name="isPositive" />
+        </div>
+        <button type="submit">Add Review</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
