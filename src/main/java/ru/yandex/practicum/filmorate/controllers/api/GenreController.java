@@ -20,7 +20,7 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping("/get")
+    @GetMapping("/api/get")
     public Collection<Genre> getAllGenres() {
         log.info("Post request for getAllGenres");
         return genreService.getAll();

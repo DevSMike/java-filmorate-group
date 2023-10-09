@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("/mpa")
+@RequestMapping("/api/mpa")
 public class MpaController {
     private final MpaService mpaService;
 

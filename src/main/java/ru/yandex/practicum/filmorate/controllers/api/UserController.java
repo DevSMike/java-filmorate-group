@@ -20,7 +20,7 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -44,7 +44,7 @@ public class UserController {
         return userService.updateUser(user);
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public Collection<User> getAllUsers() {
         log.info("Get request for users");
         return userService.getAllUsers();
