@@ -52,7 +52,8 @@ public class UserDbStorage implements UserStorage {
                 .addValue("birthday", user.getBirthday());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, sqlParameterSource, keyHolder);
-        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        Map<String, Object> keys = keyHolder.getKeys();
+        long id = (long) Objects.requireNonNull(keys).get("user_id");
         log.debug("User created with id: " + id);
         Map<Long, String> friends = user.getFriends();
         if (friends.size() > 0) {

@@ -102,7 +102,8 @@ public class FilmDbStorage implements FilmStorage {
                 .addValue("mpa", film.getMpa().getId());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, sqlParameterSource, keyHolder);
-        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        Map<String, Object> keys = keyHolder.getKeys();
+        long id = (long) Objects.requireNonNull(keys).get("film_id");
         log.debug("Film added with id: " + id);
         Map<Long, Integer> rates = film.getRates();
         if (rates != null && !rates.isEmpty()) {
@@ -248,7 +249,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getFilmsForDirectorSorted(Long id, String sortBy) {
-        String sortSql = SELECT_ALL_FILMS_WITH_GENRES_LIKES_AND_DIRECTORS + " WHERE d.director_id = :id ";
+        String sortSql = SELECT_ALL_FILMS_WITH_GENRES_LIKES_AND_DIRECTORS +
+                " WHERE d.director_id = :id ";
         if (sortBy.equalsIgnoreCase("likes")) {
             sortSql += " ORDER BY rate DESC";
         } else if (sortBy.equalsIgnoreCase("year")) {
@@ -263,7 +265,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getSearchResult(String query, String by) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource().addValue("query", "%" + query + "%");
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+                .addValue("query", "%" + query + "%");
         Set<String> columns = Set.of(by.split(","));
         if (!columns.contains("director") && !columns.contains("title")) {
             throw new ValidationException("Error in search params 'by' = " + by);
@@ -281,7 +284,7 @@ public class FilmDbStorage implements FilmStorage {
             sql.append(SELECT_ALL_FILMS_WITH_GENRES_LIKES_AND_DIRECTORS);
             sql.append(" WHERE d.director_name ILIKE :query\n");
         }
-        sql.append(") ORDER BY rate DESC;");
+        sql.append(") AS subquery ORDER BY rate DESC;");
         log.debug("Поиск подстроки '{}' в колонках '{}'.", query, by);
         return jdbcTemplate.query(sql.toString(), mapSqlParameterSource, filmWithGenresAndLikesExtractor);
     }

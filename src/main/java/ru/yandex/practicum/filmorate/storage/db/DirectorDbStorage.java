@@ -57,7 +57,8 @@ public class DirectorDbStorage implements DirectorStorage {
                 .addValue("name", director.getName());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, sqlParameterSource, keyHolder);
-        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        Map<String, Object> keys = keyHolder.getKeys();
+        long id = (long) Objects.requireNonNull(keys).get("director_id");
         log.debug("Director added with id: {}", id);
         return getById(id).orElseThrow(() -> new NotFoundException("Error creating director id " + id));
     }
